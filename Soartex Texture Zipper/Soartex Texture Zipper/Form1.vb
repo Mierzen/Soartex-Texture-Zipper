@@ -17,18 +17,24 @@
     Private Sub btn_run_Click(sender As Object, e As EventArgs) Handles btn_run.Click
         Dim dirSource As String = tb_folderSource.Text
         Dim dirTarget As String
+        Dim str As String
 
         If dirSource = "" Then
-            MsgBox("Select a folder to compress to a resource pack file", MsgBoxStyle.Exclamation, "Select folder to convert")
+            str = "Select a folder to compress to a resource pack file"
+            MsgBox(str, MsgBoxStyle.Exclamation, "Select folder to convert")
         Else
-
-            If tb_folderTarget.Text = "" Then
-                dirTarget = tb_folderSource.Text
+            If checkValidFolder(dirSource) = False Then
+                str = "Select a valid folder to compress to a resource pack file." & vbNewLine & vbNewLine & "It should contain only an ""assets"" folder."
+                MsgBox(str, MsgBoxStyle.Exclamation, "Invalid folder")
             Else
-                dirTarget = tb_folderTarget.Text
-            End If
+                If tb_folderTarget.Text = "" Then
+                    dirTarget = tb_folderSource.Text
+                Else
+                    dirTarget = tb_folderTarget.Text
+                End If
 
-            makeResourcePack(dirSource, dirTarget)
+                'makeResourcePack(dirSource, dirTarget)
+            End If
         End If
     End Sub
 End Class

@@ -56,4 +56,35 @@ Module compress
 
         Return Left(lastWritten, 10)
     End Function
+
+    Public Function checkValidFolder(dir As String) As Boolean
+        Dim i As Integer = 0
+        Dim subDirs As String() = Nothing
+
+        For Each foundDirectory In My.Computer.FileSystem.GetDirectories(dir, FileIO.SearchOption.SearchTopLevelOnly)
+            ReDim subDirs(i)
+            subDirs(i) = foundDirectory
+            i += 1
+        Next
+
+        If i <> 0 + 1 Then 'the directory contains multiple sub directories
+            Return False
+        Else 'check if it contains only assets
+            If checkForAssetsDir(subDirs(0)) = True Then
+                Return True
+            Else
+                Return False
+            End If
+        End If
+    End Function
+
+    Private Function checkForAssetsDir(dir As String) As Boolean
+        Dim match As Integer = InStrRev(dir, "assets")
+
+        If match = 0 Then
+            Return False
+        Else
+            Return True
+        End If
+    End Function
 End Module
