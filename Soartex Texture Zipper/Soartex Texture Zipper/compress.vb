@@ -24,6 +24,7 @@ Module compress
         'delete the temporary pack.mcmeta file
         My.Computer.FileSystem.DeleteFile(dirSource & "\pack.mcmeta")
 
+        Beep()
         MsgBox("Done!", MsgBoxStyle.OkOnly)
     End Sub
 
