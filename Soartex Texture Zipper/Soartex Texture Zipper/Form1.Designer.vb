@@ -54,18 +54,18 @@ Partial Class Form1
         Me.lb_descFolderSource.AutoSize = True
         Me.lb_descFolderSource.Location = New System.Drawing.Point(12, 21)
         Me.lb_descFolderSource.Name = "lb_descFolderSource"
-        Me.lb_descFolderSource.Size = New System.Drawing.Size(224, 13)
+        Me.lb_descFolderSource.Size = New System.Drawing.Size(236, 13)
         Me.lb_descFolderSource.TabIndex = 2
-        Me.lb_descFolderSource.Text = "Select a directory to make a texturepack from:"
+        Me.lb_descFolderSource.Text = "Select a directory to make a resource pack from:"
         '
         'lb_descFolderTarget
         '
         Me.lb_descFolderTarget.AutoSize = True
         Me.lb_descFolderTarget.Location = New System.Drawing.Point(12, 100)
         Me.lb_descFolderTarget.Name = "lb_descFolderTarget"
-        Me.lb_descFolderTarget.Size = New System.Drawing.Size(207, 13)
+        Me.lb_descFolderTarget.Size = New System.Drawing.Size(219, 13)
         Me.lb_descFolderTarget.TabIndex = 5
-        Me.lb_descFolderTarget.Text = "Select a directory to save the texturepack:" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10)
+        Me.lb_descFolderTarget.Text = "Select a directory to save the resource pack:" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10)
         '
         'tb_folderTarget
         '
@@ -90,7 +90,7 @@ Partial Class Form1
         Me.btn_run.Name = "btn_run"
         Me.btn_run.Size = New System.Drawing.Size(311, 23)
         Me.btn_run.TabIndex = 6
-        Me.btn_run.Text = "Make texturepack!"
+        Me.btn_run.Text = "Make resource pack!"
         Me.btn_run.UseVisualStyleBackColor = True
         '
         'Form1
