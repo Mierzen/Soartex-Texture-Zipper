@@ -1,16 +1,16 @@
-﻿Public Class Form1
+﻿Public Class form_main
 
     Private Sub btn_selectFolderToCompress_Click(sender As Object, e As EventArgs) Handles btn_selectFolderSource.Click
-        FolderBrowserDialog_toZip.ShowDialog()
-        If FolderBrowserDialog_toZip.SelectedPath <> "" Then
-            tb_folderSource.Text = FolderBrowserDialog_toZip.SelectedPath
+        FolderBrowserDialog.ShowDialog()
+        If FolderBrowserDialog.SelectedPath <> "" Then
+            tb_folderSource.Text = FolderBrowserDialog.SelectedPath
         End If
     End Sub
 
     Private Sub btn_selectFolderTarget_Click(sender As Object, e As EventArgs) Handles btn_selectFolderTarget.Click
-        FolderBrowserDialog_toZip.ShowDialog()
-        If FolderBrowserDialog_toZip.SelectedPath <> "" Then
-            tb_folderTarget.Text = FolderBrowserDialog_toZip.SelectedPath
+        FolderBrowserDialog.ShowDialog()
+        If FolderBrowserDialog.SelectedPath <> "" Then
+            tb_folderTarget.Text = FolderBrowserDialog.SelectedPath
         End If
     End Sub
 

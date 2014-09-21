@@ -32,7 +32,7 @@ Namespace My
         
         <Global.System.Diagnostics.DebuggerStepThroughAttribute()>  _
         Protected Overrides Sub OnCreateMainForm()
-            Me.MainForm = Global.Soartex_Texture_Zipper.Form1
+            Me.MainForm = Global.Soartex_Texture_Zipper.form_main
         End Sub
     End Class
 End Namespace
