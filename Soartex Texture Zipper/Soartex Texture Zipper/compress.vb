@@ -12,7 +12,7 @@ Module compress
         rpDirName = extractName(dirSource)
 
         'create the pack.mcmeta file (temporary)
-        createDescriptionFile(dirTarget, replaceUnderscore(rpDirName))
+        createDescriptionFile(dirSource, replaceUnderscore(rpDirName))
 
         'get last modified version of the directory
         Dim ver As String = getVersion(dirSource)

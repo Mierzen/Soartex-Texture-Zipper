@@ -33,7 +33,14 @@
                     dirTarget = tb_folderTarget.Text
                 End If
 
+                Me.Enabled = False
+                str = btn_run.Text
+                btn_run.Text = "COMPRESSING"
+
                 makeResourcePack(dirSource, dirTarget)
+
+                btn_run.Text = str
+                Me.Enabled = True
             End If
         End If
     End Sub
