@@ -4,9 +4,12 @@ Imports System.IO.Compression
 Imports System.Text
 
 Module compress
+
+    Dim subDirsMain As String() = Nothing 'asset folder level
+
     Public Sub makeResourcePack(dirSource As String, dirTarget As String)
         Dim rpName As String
-        rpName = extractName(dirSource)
+        rpName = extractName(subDirsMain(0))
 
         'create the pack.mcmeta file (temporary)
         createDescriptionFile(dirTarget, rpName)
@@ -57,20 +60,23 @@ Module compress
         Return Left(lastWritten, 10)
     End Function
 
-    Public Function checkValidFolder(dir As String) As Boolean
+    Private Sub getSubDirs(dirToCheck As String, ByRef subDirArray() As String)
         Dim i As Integer = 0
-        Dim subDirs As String() = Nothing
 
-        For Each foundDirectory In My.Computer.FileSystem.GetDirectories(dir, FileIO.SearchOption.SearchTopLevelOnly)
-            ReDim subDirs(i)
-            subDirs(i) = foundDirectory
+        For Each foundDirectory In My.Computer.FileSystem.GetDirectories(dirToCheck, FileIO.SearchOption.SearchTopLevelOnly)
+            ReDim subDirArray(i)
+            subDirArray(i) = foundDirectory
             i += 1
         Next
+    End Sub
 
-        If i <> 0 + 1 Then 'the directory contains multiple sub directories
+    Public Function checkValidFolder(dir As String) As Boolean
+        getSubDirs(dir, subDirsMain)
+
+        If CInt(subDirsMain.Length) <> 1 Then 'the directory contains multiple sub directories
             Return False
         Else 'check if it contains only assets
-            If checkForAssetsDir(subDirs(0)) = True Then
+            If checkForAssetsDir(subDirsMain(0)) = True Then
                 Return True
             Else
                 Return False
