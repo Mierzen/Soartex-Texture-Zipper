@@ -8,18 +8,18 @@ Module compress
     Dim subDirsMain As String() = Nothing 'asset folder level
 
     Public Sub makeResourcePack(dirSource As String, dirTarget As String)
-        Dim rpName As String
-        rpName = extractName(subDirsMain(0))
+        Dim rpFileName As String
+        rpFileName = extractName(dirSource)
 
         'create the pack.mcmeta file (temporary)
-        createDescriptionFile(dirTarget, rpName)
+        createDescriptionFile(dirTarget, replaceUnderscore(rpFileName))
 
         'get last modified version of the directory
         Dim ver As String = getVersion(dirSource)
 
         'create the resource pack
-        ZipFile.CreateFromDirectory(dirSource, My.Computer.FileSystem.SpecialDirectories.Temp & "\" & rpName & "-" & ver & ".zip")
-        My.Computer.FileSystem.MoveFile(My.Computer.FileSystem.SpecialDirectories.Temp & "\" & rpName & "-" & ver & ".zip", dirSource & "\" & rpName & "-" & ver & ".zip")
+        ZipFile.CreateFromDirectory(dirSource, My.Computer.FileSystem.SpecialDirectories.Temp & "\" & rpFileName & "-" & ver & ".zip")
+        My.Computer.FileSystem.MoveFile(My.Computer.FileSystem.SpecialDirectories.Temp & "\" & rpFileName & "-" & ver & ".zip", dirSource & "\" & rpFileName & "-" & ver & ".zip")
 
         'delete the temporary pack.mcmeta file
         My.Computer.FileSystem.DeleteFile(dirSource & "\pack.mcmeta")
@@ -32,6 +32,13 @@ Module compress
         Dim len As Integer = Strings.Len(dir)
 
         Dim name As String = Right(dir, len - lastSlash)
+
+        Return name
+    End Function
+
+    Private Function replaceUnderscore(name As String) As String
+        name = Strings.Replace(name, Strings.ChrW(45), " ")
+        name = Strings.Replace(name, Strings.ChrW(95), " ")
 
         Return name
     End Function

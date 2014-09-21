@@ -33,7 +33,7 @@
                     dirTarget = tb_folderTarget.Text
                 End If
 
-                'makeResourcePack(dirSource, dirTarget)
+                makeResourcePack(dirSource, dirTarget)
             End If
         End If
     End Sub
