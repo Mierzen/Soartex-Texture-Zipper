@@ -34,12 +34,15 @@
                 End If
 
                 Me.Enabled = False
+                Cursor = Cursors.WaitCursor
+
                 str = btn_run.Text
                 btn_run.Text = "COMPRESSING"
 
                 makeResourcePack(dirSource, dirTarget)
 
                 btn_run.Text = str
+                Cursor = Cursors.Arrow
                 Me.Enabled = True
             End If
         End If
