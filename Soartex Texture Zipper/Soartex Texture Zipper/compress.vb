@@ -11,51 +11,58 @@ Module compress
         Dim rpDirName As String
         rpDirName = extractName(dirSource)
 
-        'create the pack.mcmeta file (temporary)
-        createDescriptionFile(dirSource, replaceUnderscore(rpDirName))
+        Try
 
-        'get last modified version of the directory
-        Dim ver As String = getVersion(dirSource)
+            'create the pack.mcmeta file (temporary)
+            createOrDeleteDescriptionFile(dirSource, replaceUnderscore(rpDirName))
 
-        Dim rpFileNamePathTemp As String = My.Computer.FileSystem.SpecialDirectories.Temp & "\" & rpDirName & "-" & ver & ".zip"
-        Dim rpFileNamePath As String = dirTarget & "\" & rpDirName & "-" & ver & ".zip"
+            'get last modified version of the directory
+            Dim ver As String = getVersion(dirSource)
 
-        'create the resource pack
-        'check if the zip already exists in the temp folder. If so, delete it
-        If My.Computer.FileSystem.FileExists(rpFileNamePathTemp) = True Then
-            My.Computer.FileSystem.DeleteFile(rpFileNamePathTemp)
-        End If
+            Dim rpFileNamePathTemp As String = My.Computer.FileSystem.SpecialDirectories.Temp & "\" & rpDirName & "-" & ver & ".zip"
+            Dim rpFileNamePath As String = dirTarget & "\" & rpDirName & "-" & ver & ".zip"
 
-        'check if the zip already exists in the target folder. If so, ask what to do
-        If My.Computer.FileSystem.FileExists(rpFileNamePath) = True Then
-            Dim str As String = "Resourcepack already exists in the target directory." & vbNewLine & vbNewLine & "Click ""Yes"" to replace the file." _
-                                & vbNewLine & "Click ""No"" to select a new target directory."
-            Dim result As MsgBoxResult
-            result = MsgBox(str, MsgBoxStyle.YesNoCancel, "File already exists")
-
-            If result = vbYes Then
-                My.Computer.FileSystem.DeleteFile(rpFileNamePath)
-            ElseIf result = vbCancel Then
-                Exit Sub
-            ElseIf result = vbNo Then
-                form_main.Enabled = False
-                form_selectTarget.ShowDialog()
-                dirTarget = form_selectTarget.tb_folderTarget.Text
-                form_selectTarget.Close()
-                form_main.Enabled = True
-
-                rpFileNamePath = dirTarget & "\" & rpDirName & "-" & ver & ".zip"
+            'create the resource pack
+            'check if the zip already exists in the temp folder. If so, delete it
+            If My.Computer.FileSystem.FileExists(rpFileNamePathTemp) = True Then
+                My.Computer.FileSystem.DeleteFile(rpFileNamePathTemp)
             End If
-        End If
 
-        ZipFile.CreateFromDirectory(dirSource, rpFileNamePathTemp)
-        My.Computer.FileSystem.MoveFile(rpFileNamePathTemp, rpFileNamePath)
+            'check if the zip already exists in the target folder. If so, ask what to do
+            If My.Computer.FileSystem.FileExists(rpFileNamePath) = True Then
+                Dim str As String = "Resourcepack already exists in the target directory." & vbNewLine & vbNewLine & "Click ""Yes"" to replace the file." _
+                                    & vbNewLine & "Click ""No"" to select a new target directory."
+                Dim result As MsgBoxResult
+                result = MsgBox(str, MsgBoxStyle.YesNoCancel, "File already exists")
 
-        'delete the temporary pack.mcmeta file
-        My.Computer.FileSystem.DeleteFile(dirSource & "\pack.mcmeta")
+                If result = vbYes Then
+                    My.Computer.FileSystem.DeleteFile(rpFileNamePath)
+                ElseIf result = vbCancel Then
+                    Exit Sub
+                ElseIf result = vbNo Then
+                    form_main.Enabled = False
+                    form_selectTarget.ShowDialog()
+                    dirTarget = form_selectTarget.tb_folderTarget.Text
+                    form_selectTarget.Close()
+                    form_main.Enabled = True
 
-        Beep()
-        MsgBox("Done!", MsgBoxStyle.OkOnly)
+                    rpFileNamePath = dirTarget & "\" & rpDirName & "-" & ver & ".zip"
+                End If
+            End If
+
+            ZipFile.CreateFromDirectory(dirSource, rpFileNamePathTemp)
+            My.Computer.FileSystem.MoveFile(rpFileNamePathTemp, rpFileNamePath)
+
+            'delete the temporary pack.mcmeta file
+            My.Computer.FileSystem.DeleteFile(dirSource & "\pack.mcmeta")
+
+            Beep()
+            MsgBox("Done!", MsgBoxStyle.OkOnly)
+
+        Catch ex As System.IO.IOException
+            createOrDeleteDescriptionFile(dirSource, replaceUnderscore(rpDirName), True)
+            MsgBox("The file is currently used by another process!" & vbNewLine & vbNewLine & "Please close the other process or try again.", MsgBoxStyle.Critical, "File is used by another process")
+        End Try
     End Sub
 
     Private Function extractName(dir As String) As String
@@ -74,11 +81,15 @@ Module compress
         Return name
     End Function
 
-    Private Sub createDescriptionFile(dirTarget As String, rpName As String) 'creates the pack.mcmeta
+    Private Sub createOrDeleteDescriptionFile(dirTarget As String, rpName As String, Optional deleteOnly As Boolean = False) 'creates the pack.mcmeta
         Dim fileNamePath As String = dirTarget & "\pack.mcmeta"
 
         If My.Computer.FileSystem.FileExists(fileNamePath) = True Then
             My.Computer.FileSystem.DeleteFile(fileNamePath)
+        End If
+
+        If deleteOnly = True Then
+            Exit Sub
         End If
 
         Dim fs As FileStream = File.Create(fileNamePath)
