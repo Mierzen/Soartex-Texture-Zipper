@@ -50,7 +50,35 @@ Module compress
                 End If
             End If
 
-            ZipFile.CreateFromDirectory(dirSource, rpFileNamePathTemp)
+            'Zip file WORKAROUND
+            'check if WinRAR exist
+            Dim winrarExists As Boolean
+            Dim winrarPath As String
+            winrarPath = "C:\Program Files\WinRAR\WinRAR.exe"
+
+            If My.Computer.FileSystem.FileExists(winrarPath) = True Then : winrarExists = True
+            Else : winrarExists = False
+            End If
+
+            If winrarExists = True Then
+                If Strings.Right(dirSource, 1) <> "\" Then 'append "\" if needed, so that the folder contents is zipped and not the folder itself
+                    dirSource += "\"
+                End If
+
+                Dim compress_process As System.Diagnostics.Process = New System.Diagnostics.Process()
+
+                rpFileNamePathTemp = Strings.Left(rpFileNamePathTemp, Len(rpFileNamePathTemp) - 4)
+                compress_process.StartInfo.FileName = winrarPath
+                compress_process.StartInfo.Arguments = ("a -ep1 -r -afzip """ & rpFileNamePathTemp & """ """ & dirSource & """")
+                compress_process.Start()
+                compress_process.WaitForExit()
+                rpFileNamePathTemp += ".zip"
+            Else
+                MsgBox("WinRAR isn't present." & vbNewLine & "The resource pack will still be created, however, you will have to rezip or extract the file for it to work.", _
+                       vbExclamation, "WinRAR not present")
+                ZipFile.CreateFromDirectory(dirSource, rpFileNamePathTemp)
+            End If
+
             My.Computer.FileSystem.MoveFile(rpFileNamePathTemp, rpFileNamePath)
 
             'delete the temporary pack.mcmeta file
