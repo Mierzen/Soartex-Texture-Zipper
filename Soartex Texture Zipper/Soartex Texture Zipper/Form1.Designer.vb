@@ -96,6 +96,7 @@ Partial Class form_main
         '
         'form_main
         '
+        Me.AcceptButton = Me.btn_run
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(334, 201)
@@ -106,8 +107,12 @@ Partial Class form_main
         Me.Controls.Add(Me.lb_descFolderSource)
         Me.Controls.Add(Me.tb_folderSource)
         Me.Controls.Add(Me.btn_selectFolderSource)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.MaximizeBox = False
         Me.Name = "form_main"
+        Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Soartex resource pack creator"
         Me.ResumeLayout(False)
         Me.PerformLayout()
