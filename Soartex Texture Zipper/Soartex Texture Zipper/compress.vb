@@ -33,16 +33,29 @@ Module compress
                 Dim str As String = "Resourcepack already exists in the target directory." & vbNewLine & vbNewLine & "Click ""Yes"" to replace the file." _
                                     & vbNewLine & "Click ""No"" to select a new target directory."
                 Dim result As MsgBoxResult
-                result = MsgBox(str, MsgBoxStyle.YesNoCancel, "File already exists")
+                result = MsgBox(str, MsgBoxStyle.Exclamation Or MsgBoxStyle.YesNoCancel, "File already exists")
 
-                If result = vbYes Then
+                If result = MsgBoxResult.Yes Then
                     My.Computer.FileSystem.DeleteFile(rpFileNamePath)
                 ElseIf result = vbCancel Then
                     Exit Sub
-                ElseIf result = vbNo Then
+                ElseIf result = MsgBoxResult.No Then
+LineErr:
                     form_main.Enabled = False
                     form_selectTarget.ShowDialog()
-                    dirTarget = form_selectTarget.tb_folderTarget.Text
+                    If (form_selectTarget.tb_folderTarget.Text = dirTarget) Or (form_selectTarget.tb_folderTarget.Text = dirTarget & "\") Then
+                        result = MsgBox("Please select a different folder, one where the file does not already exist.", MsgBoxStyle.Exclamation Or MsgBoxStyle.OkCancel, _
+                               "Select a different folder")
+                        If result = MsgBoxResult.Cancel Then
+                            Exit Sub
+                        End If
+
+                        form_selectTarget.tb_folderTarget.Text = ""
+
+                        GoTo LineErr
+                    Else
+                        dirTarget = form_selectTarget.tb_folderTarget.Text
+                    End If
                     form_selectTarget.Close()
                     form_main.Enabled = True
 
@@ -85,7 +98,7 @@ Module compress
             createOrDeletePackFiles(dirSource, replaceUnderscore(rpDirName), True)
 
             Beep()
-            MsgBox("Done!", MsgBoxStyle.OkOnly)
+            MsgBox("Done!", MsgBoxStyle.OkOnly Or MsgBoxStyle.MsgBoxSetForeground)
 
         Catch ex As System.IO.IOException
             createOrDeletePackFiles(dirSource, replaceUnderscore(rpDirName), True)

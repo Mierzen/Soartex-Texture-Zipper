@@ -20,7 +20,7 @@
         Dim str As String
 
         If dirSource = "" Then
-            str = "Select a folder to compress to a resource pack file"
+            str = "Select a folder to compress to a resource pack file."
             MsgBox(str, MsgBoxStyle.Exclamation, "Select folder to convert")
         Else
             If checkValidFolder(dirSource) = False Then
@@ -28,10 +28,16 @@
                 MsgBox(str, MsgBoxStyle.Exclamation, "Invalid folder")
             Else
                 If tb_folderTarget.Text = "" Then
-                    dirTarget = tb_folderSource.Text
-                Else
-                    dirTarget = tb_folderTarget.Text
+                    Dim result As MsgBoxResult
+                    result = MsgBox("Output to same folder as source?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo, "No output selected")
+                    If result = MsgBoxResult.Yes Then
+                        tb_folderTarget.Text = tb_folderSource.Text
+                    Else
+                        Exit Sub
+                    End If
                 End If
+
+                dirTarget = tb_folderTarget.Text
 
                 Me.Enabled = False
                 Cursor = Cursors.WaitCursor
