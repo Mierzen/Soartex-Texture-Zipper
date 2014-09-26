@@ -23,9 +23,16 @@
             str = "Select a folder to compress to a resource pack file."
             MsgBox(str, MsgBoxStyle.Exclamation, "Select folder to convert")
         Else
-            If checkValidFolder(dirSource) = False Then
+            Dim isFolderValid As String = checkValidFolder(dirSource)
+
+            If isFolderValid = "NoAssets" Then
+
                 str = "Select a valid folder to compress to a resource pack file." & vbNewLine & vbNewLine & "It should contain only an ""assets"" folder."
                 MsgBox(str, MsgBoxStyle.Exclamation, "Invalid folder")
+
+            ElseIf isFolderValid = "False" Then
+                Exit Sub
+
             Else
                 If tb_folderTarget.Text = "" Then
                     Dim result As MsgBoxResult

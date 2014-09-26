@@ -8,101 +8,110 @@ Module compress
     Dim subDirsMain As String() = Nothing 'asset folder level
 
     Public Sub makeResourcePack(dirSource As String, dirTarget As String)
-        Dim rpDirName As String
-        rpDirName = extractName(dirSource)
-
         Try
 
-            'create the pack.mcmeta file (temporary)
-            createOrDeletePackFiles(dirSource, replaceUnderscore(rpDirName))
+            Dim rpDirName As String
+            rpDirName = extractName(dirSource)
 
-            'get last modified version of the directory
-            Dim ver As String = getVersion(dirSource)
+            Try
 
-            Dim rpFileNamePathTemp As String = My.Computer.FileSystem.SpecialDirectories.Temp & "\" & rpDirName & "-" & ver & ".zip"
-            Dim rpFileNamePath As String = dirTarget & "\" & rpDirName & "-" & ver & ".zip"
+                'create the pack.mcmeta file (temporary)
+                createOrDeletePackFiles(dirSource, replaceUnderscore(rpDirName))
 
-            'create the resource pack
-            'check if the zip already exists in the temp folder. If so, delete it
-            If My.Computer.FileSystem.FileExists(rpFileNamePathTemp) = True Then
-                My.Computer.FileSystem.DeleteFile(rpFileNamePathTemp)
-            End If
+                'get last modified version of the directory
+                Dim ver As String = getVersion(dirSource)
 
-            'check if the zip already exists in the target folder. If so, ask what to do
-            If My.Computer.FileSystem.FileExists(rpFileNamePath) = True Then
-                Dim str As String = "Resourcepack already exists in the target directory." & vbNewLine & vbNewLine & "Click ""Yes"" to replace the file." _
-                                    & vbNewLine & "Click ""No"" to select a new target directory."
-                Dim result As MsgBoxResult
-                result = MsgBox(str, MsgBoxStyle.Exclamation Or MsgBoxStyle.YesNoCancel, "File already exists")
+                Dim rpFileNamePathTemp As String = My.Computer.FileSystem.SpecialDirectories.Temp & "\" & rpDirName & "-" & ver & ".zip"
+                Dim rpFileNamePath As String = dirTarget & "\" & rpDirName & "-" & ver & ".zip"
 
-                If result = MsgBoxResult.Yes Then
-                    My.Computer.FileSystem.DeleteFile(rpFileNamePath)
-                ElseIf result = vbCancel Then
-                    Exit Sub
-                ElseIf result = MsgBoxResult.No Then
+                'create the resource pack
+                'check if the zip already exists in the temp folder. If so, delete it
+                If My.Computer.FileSystem.FileExists(rpFileNamePathTemp) = True Then
+                    My.Computer.FileSystem.DeleteFile(rpFileNamePathTemp)
+                End If
+
+                'check if the zip already exists in the target folder. If so, ask what to do
+                If My.Computer.FileSystem.FileExists(rpFileNamePath) = True Then
+                    Dim str As String = "Resourcepack already exists in the target directory." & vbNewLine & vbNewLine & "Click ""Yes"" to replace the file." _
+                                        & vbNewLine & "Click ""No"" to select a new target directory."
+                    Dim result As MsgBoxResult
+                    result = MsgBox(str, MsgBoxStyle.Exclamation Or MsgBoxStyle.YesNoCancel, "File already exists")
+
+                    If result = MsgBoxResult.Yes Then
+                        My.Computer.FileSystem.DeleteFile(rpFileNamePath)
+                    ElseIf result = vbCancel Then
+                        Exit Sub
+                    ElseIf result = MsgBoxResult.No Then
 LineErr:
-                    form_main.Enabled = False
-                    form_selectTarget.ShowDialog()
-                    If (form_selectTarget.tb_folderTarget.Text = dirTarget) Or (form_selectTarget.tb_folderTarget.Text = dirTarget & "\") Then
-                        result = MsgBox("Please select a different folder, one where the file does not already exist.", MsgBoxStyle.Exclamation Or MsgBoxStyle.OkCancel, _
-                               "Select a different folder")
-                        If result = MsgBoxResult.Cancel Then
-                            Exit Sub
+                        form_main.Enabled = False
+                        form_selectTarget.ShowDialog()
+                        If (form_selectTarget.tb_folderTarget.Text = dirTarget) Or (form_selectTarget.tb_folderTarget.Text = dirTarget & "\") Then
+                            result = MsgBox("Please select a different folder, one where the file does not already exist.", MsgBoxStyle.Exclamation Or MsgBoxStyle.OkCancel, _
+                                   "Select a different folder")
+                            If result = MsgBoxResult.Cancel Then
+                                Exit Sub
+                            End If
+
+                            form_selectTarget.tb_folderTarget.Text = ""
+
+                            GoTo LineErr
+                        Else
+                            dirTarget = form_selectTarget.tb_folderTarget.Text
                         End If
+                        form_selectTarget.Close()
+                        form_main.Enabled = True
 
-                        form_selectTarget.tb_folderTarget.Text = ""
-
-                        GoTo LineErr
-                    Else
-                        dirTarget = form_selectTarget.tb_folderTarget.Text
+                        rpFileNamePath = dirTarget & "\" & rpDirName & "-" & ver & ".zip"
                     End If
-                    form_selectTarget.Close()
-                    form_main.Enabled = True
-
-                    rpFileNamePath = dirTarget & "\" & rpDirName & "-" & ver & ".zip"
-                End If
-            End If
-
-            'Zip file WORKAROUND
-            'check if WinRAR exist
-            Dim winrarExists As Boolean
-            Dim winrarPath As String
-            winrarPath = "C:\Program Files\WinRAR\WinRAR.exe"
-
-            If My.Computer.FileSystem.FileExists(winrarPath) = True Then : winrarExists = True
-            Else : winrarExists = False
-            End If
-
-            If winrarExists = True Then
-                If Strings.Right(dirSource, 1) <> "\" Then 'append "\" if needed, so that the folder contents is zipped and not the folder itself
-                    dirSource += "\"
                 End If
 
-                Dim compress_process As System.Diagnostics.Process = New System.Diagnostics.Process()
+                'Zip file WORKAROUND
+                'check if WinRAR exist
+                Dim winrarExists As Boolean
+                Dim winrarPath As String
+                winrarPath = "C:\Program Files\WinRAR\WinRAR.exe"
 
-                rpFileNamePathTemp = Strings.Left(rpFileNamePathTemp, Len(rpFileNamePathTemp) - 4)
-                compress_process.StartInfo.FileName = winrarPath
-                compress_process.StartInfo.Arguments = ("a -ep1 -r -afzip """ & rpFileNamePathTemp & """ """ & dirSource & """")
-                compress_process.Start()
-                compress_process.WaitForExit()
-                rpFileNamePathTemp += ".zip"
-            Else
-                MsgBox("WinRAR isn't present." & vbNewLine & "The resource pack will still be created, however, you will have to rezip or extract the file for it to work.", _
-                       vbExclamation, "WinRAR not present")
-                ZipFile.CreateFromDirectory(dirSource, rpFileNamePathTemp)
-            End If
+                If My.Computer.FileSystem.FileExists(winrarPath) = True Then : winrarExists = True
+                Else : winrarExists = False
+                End If
 
-            My.Computer.FileSystem.MoveFile(rpFileNamePathTemp, rpFileNamePath)
+                If winrarExists = True Then
+                    If Strings.Right(dirSource, 1) <> "\" Then 'append "\" if needed, so that the folder contents is zipped and not the folder itself
+                        dirSource += "\"
+                    End If
 
-            'delete the temporary pack.mcmeta file
-            createOrDeletePackFiles(dirSource, replaceUnderscore(rpDirName), True)
+                    Dim compress_process As System.Diagnostics.Process = New System.Diagnostics.Process()
 
-            Beep()
-            MsgBox("Done!", MsgBoxStyle.OkOnly Or MsgBoxStyle.MsgBoxSetForeground)
+                    rpFileNamePathTemp = Strings.Left(rpFileNamePathTemp, Len(rpFileNamePathTemp) - 4)
+                    compress_process.StartInfo.FileName = winrarPath
+                    compress_process.StartInfo.Arguments = ("a -ep1 -r -afzip """ & rpFileNamePathTemp & """ """ & dirSource & """")
+                    compress_process.Start()
+                    compress_process.WaitForExit()
+                    rpFileNamePathTemp += ".zip"
+                Else
+                    MsgBox("WinRAR isn't present." & vbNewLine & "The resource pack will still be created, however, you will have to rezip or extract the file for it to work.", _
+                           vbExclamation, "WinRAR not present")
+                    ZipFile.CreateFromDirectory(dirSource, rpFileNamePathTemp)
+                End If
 
-        Catch ex As System.IO.IOException
-            createOrDeletePackFiles(dirSource, replaceUnderscore(rpDirName), True)
-            MsgBox("The file is currently used by another process!" & vbNewLine & vbNewLine & "Please close the other process or try again.", MsgBoxStyle.Critical, "File is used by another process")
+                My.Computer.FileSystem.MoveFile(rpFileNamePathTemp, rpFileNamePath)
+
+                'delete the temporary pack.mcmeta file
+                createOrDeletePackFiles(dirSource, replaceUnderscore(rpDirName), True)
+
+                Beep()
+                MsgBox("Done!", MsgBoxStyle.OkOnly Or MsgBoxStyle.MsgBoxSetForeground)
+
+            Catch ex As System.IO.IOException
+                createOrDeletePackFiles(dirSource, replaceUnderscore(rpDirName), True)
+                MsgBox("The file is currently used by another process!" & vbNewLine & vbNewLine & "Please close the other process or try again.", MsgBoxStyle.Critical, "File is used by another process")
+            End Try
+
+        Catch ex As System.IO.DirectoryNotFoundException
+            invalidFolder()
+
+        Catch ex As System.ArgumentException
+            invalidFolder()
         End Try
     End Sub
 
@@ -173,18 +182,28 @@ LineErr:
         Next
     End Sub
 
-    Public Function checkValidFolder(dir As String) As Boolean
-        getSubDirs(dir, subDirsMain)
+    Public Function checkValidFolder(dir As String) As String
+        Try
+            getSubDirs(dir, subDirsMain)
 
-        If CInt(subDirsMain.Length) <> 1 Then 'the directory contains multiple sub directories
-            Return False
-        Else 'check if it contains only assets
-            If checkForAssetsDir(subDirsMain(0)) = True Then
-                Return True
-            Else
-                Return False
+            If CInt(subDirsMain.Length) <> 1 Then 'the directory contains multiple sub directories
+                Return "NoAssets"
+            Else 'check if it contains only assets
+                If checkForAssetsDir(subDirsMain(0)) = True Then
+                    Return True
+                Else
+                    Return "NoAssets"
+                End If
             End If
-        End If
+
+        Catch ex As System.IO.DirectoryNotFoundException
+            invalidFolder()
+            Return False
+
+        Catch ex As System.ArgumentException
+            invalidFolder()
+            Return False
+        End Try
     End Function
 
     Private Function checkForAssetsDir(dir As String) As Boolean
@@ -196,4 +215,8 @@ LineErr:
             Return True
         End If
     End Function
+
+    Private Sub invalidFolder()
+        MsgBox("Please enter a valid folder path.", MsgBoxStyle.Critical, "Invalid path")
+    End Sub
 End Module
