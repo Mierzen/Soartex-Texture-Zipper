@@ -22,25 +22,16 @@ Partial Class form_main
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(form_main))
         Me.FolderBrowserDialog = New System.Windows.Forms.FolderBrowserDialog()
-        Me.btn_selectFolderSource = New System.Windows.Forms.Button()
         Me.tb_folderSource = New System.Windows.Forms.TextBox()
         Me.lb_descFolderSource = New System.Windows.Forms.Label()
         Me.lb_descFolderTarget = New System.Windows.Forms.Label()
         Me.tb_folderTarget = New System.Windows.Forms.TextBox()
-        Me.btn_selectFolderTarget = New System.Windows.Forms.Button()
         Me.btn_run = New System.Windows.Forms.Button()
+        Me.btn_selectFolderTarget = New System.Windows.Forms.Button()
+        Me.btn_selectFolderSource = New System.Windows.Forms.Button()
         Me.SuspendLayout()
-        '
-        'btn_selectFolderSource
-        '
-        Me.btn_selectFolderSource.BackgroundImage = Global.Soartex_Texture_Zipper.My.Resources.Resources.openfolder
-        Me.btn_selectFolderSource.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center
-        Me.btn_selectFolderSource.Location = New System.Drawing.Point(300, 39)
-        Me.btn_selectFolderSource.Name = "btn_selectFolderSource"
-        Me.btn_selectFolderSource.Size = New System.Drawing.Size(22, 22)
-        Me.btn_selectFolderSource.TabIndex = 0
-        Me.btn_selectFolderSource.UseVisualStyleBackColor = True
         '
         'tb_folderSource
         '
@@ -74,6 +65,15 @@ Partial Class form_main
         Me.tb_folderTarget.Size = New System.Drawing.Size(289, 20)
         Me.tb_folderTarget.TabIndex = 4
         '
+        'btn_run
+        '
+        Me.btn_run.Location = New System.Drawing.Point(11, 160)
+        Me.btn_run.Name = "btn_run"
+        Me.btn_run.Size = New System.Drawing.Size(311, 23)
+        Me.btn_run.TabIndex = 6
+        Me.btn_run.Text = "Make resource pack!"
+        Me.btn_run.UseVisualStyleBackColor = True
+        '
         'btn_selectFolderTarget
         '
         Me.btn_selectFolderTarget.BackgroundImage = Global.Soartex_Texture_Zipper.My.Resources.Resources.openfolder
@@ -84,14 +84,15 @@ Partial Class form_main
         Me.btn_selectFolderTarget.TabIndex = 3
         Me.btn_selectFolderTarget.UseVisualStyleBackColor = True
         '
-        'btn_run
+        'btn_selectFolderSource
         '
-        Me.btn_run.Location = New System.Drawing.Point(11, 160)
-        Me.btn_run.Name = "btn_run"
-        Me.btn_run.Size = New System.Drawing.Size(311, 23)
-        Me.btn_run.TabIndex = 6
-        Me.btn_run.Text = "Make resource pack!"
-        Me.btn_run.UseVisualStyleBackColor = True
+        Me.btn_selectFolderSource.BackgroundImage = Global.Soartex_Texture_Zipper.My.Resources.Resources.openfolder
+        Me.btn_selectFolderSource.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center
+        Me.btn_selectFolderSource.Location = New System.Drawing.Point(300, 39)
+        Me.btn_selectFolderSource.Name = "btn_selectFolderSource"
+        Me.btn_selectFolderSource.Size = New System.Drawing.Size(22, 22)
+        Me.btn_selectFolderSource.TabIndex = 0
+        Me.btn_selectFolderSource.UseVisualStyleBackColor = True
         '
         'form_main
         '
@@ -105,6 +106,7 @@ Partial Class form_main
         Me.Controls.Add(Me.lb_descFolderSource)
         Me.Controls.Add(Me.tb_folderSource)
         Me.Controls.Add(Me.btn_selectFolderSource)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "form_main"
         Me.Text = "Soartex resource pack creator"
         Me.ResumeLayout(False)
