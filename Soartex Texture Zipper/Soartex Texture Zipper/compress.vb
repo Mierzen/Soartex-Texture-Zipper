@@ -100,7 +100,12 @@ LineErr:
                 createOrDeletePackFiles(dirSource, replaceUnderscore(rpDirName), True)
 
                 Beep()
-                MsgBox("Done!", MsgBoxStyle.OkOnly Or MsgBoxStyle.MsgBoxSetForeground)
+                Dim openTargetDir As MsgBoxResult
+                openTargetDir = MsgBox("Done!" & vbNewLine & vbNewLine & "Open Explorer to view the resource pack?", _
+                                       MsgBoxStyle.YesNo Or MsgBoxStyle.DefaultButton2 Or MsgBoxStyle.MsgBoxSetForeground)
+                If openTargetDir = MsgBoxResult.Yes Then
+                    Diagnostics.Process.Start("Explorer.exe", "/select," & rpFileNamePath)
+                End If
 
             Catch ex As System.IO.IOException
                 createOrDeletePackFiles(dirSource, replaceUnderscore(rpDirName), True)
