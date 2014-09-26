@@ -14,7 +14,7 @@ Module compress
         Try
 
             'create the pack.mcmeta file (temporary)
-            createOrDeleteDescriptionFile(dirSource, replaceUnderscore(rpDirName))
+            createOrDeletePackFiles(dirSource, replaceUnderscore(rpDirName))
 
             'get last modified version of the directory
             Dim ver As String = getVersion(dirSource)
@@ -82,13 +82,13 @@ Module compress
             My.Computer.FileSystem.MoveFile(rpFileNamePathTemp, rpFileNamePath)
 
             'delete the temporary pack.mcmeta file
-            My.Computer.FileSystem.DeleteFile(dirSource & "\pack.mcmeta")
+            createOrDeletePackFiles(dirSource, replaceUnderscore(rpDirName), True)
 
             Beep()
             MsgBox("Done!", MsgBoxStyle.OkOnly)
 
         Catch ex As System.IO.IOException
-            createOrDeleteDescriptionFile(dirSource, replaceUnderscore(rpDirName), True)
+            createOrDeletePackFiles(dirSource, replaceUnderscore(rpDirName), True)
             MsgBox("The file is currently used by another process!" & vbNewLine & vbNewLine & "Please close the other process or try again.", MsgBoxStyle.Critical, "File is used by another process")
         End Try
     End Sub
@@ -109,18 +109,22 @@ Module compress
         Return name
     End Function
 
-    Private Sub createOrDeleteDescriptionFile(dirTarget As String, rpName As String, Optional deleteOnly As Boolean = False) 'creates the pack.mcmeta
-        Dim fileNamePath As String = dirTarget & "\pack.mcmeta"
+    Private Sub createOrDeletePackFiles(dirTarget As String, rpName As String, Optional deleteOnly As Boolean = False) 'creates the pack.mcmeta
+        Dim pathMeta As String = dirTarget & "\pack.mcmeta"
 
-        If My.Computer.FileSystem.FileExists(fileNamePath) = True Then
-            My.Computer.FileSystem.DeleteFile(fileNamePath)
+        If My.Computer.FileSystem.FileExists(pathMeta) = True Then
+            My.Computer.FileSystem.DeleteFile(pathMeta)
+        End If
+        If My.Computer.FileSystem.FileExists(dirTarget & "\pack.png") = True Then
+            My.Computer.FileSystem.DeleteFile(dirTarget & "\pack.png")
         End If
 
         If deleteOnly = True Then
             Exit Sub
         End If
 
-        Dim fs As FileStream = File.Create(fileNamePath)
+        'Create pack.mcmeta
+        Dim fs As FileStream = File.Create(pathMeta)
 
         Dim str As String
         Dim tab As String = "   "
@@ -134,6 +138,9 @@ Module compress
         Dim info As Byte() = New UTF8Encoding(True).GetBytes(str)
         fs.Write(info, 0, info.Length)
         fs.Close()
+
+        'Create pack.png
+        My.Resources.pack.Save(dirTarget & "\pack.png")
     End Sub
 
     Private Function getVersion(dir As String)
