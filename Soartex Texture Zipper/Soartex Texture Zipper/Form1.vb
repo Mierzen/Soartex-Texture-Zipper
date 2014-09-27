@@ -48,6 +48,7 @@
 
                 Me.Enabled = False
                 Cursor = Cursors.WaitCursor
+                ToolStripStatusLabel_appVersion.Width -= ToolStripProgressBar_zipProgress.Width
                 ToolStripProgressBar_zipProgress.Visible = True
 
                 str = btn_run.Text
@@ -58,12 +59,15 @@
                 btn_run.Text = str
                 Cursor = Cursors.Arrow
                 ToolStripProgressBar_zipProgress.Visible = False
+                ToolStripStatusLabel_appVersion.Width += ToolStripProgressBar_zipProgress.Width
                 Me.Enabled = True
             End If
         End If
     End Sub
 
     Private Sub form_main_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ToolStripStatusLabel_appVersion.Width += ToolStripProgressBar_zipProgress.Width
+
         Dim version As String
         version = "Version: " & My.Application.Info.Version.ToString
 

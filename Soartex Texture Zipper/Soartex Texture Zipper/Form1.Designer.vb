@@ -121,7 +121,7 @@ Partial Class form_main
         Me.ToolStripStatusLabel_appVersion.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.ToolStripStatusLabel_appVersion.Font = New System.Drawing.Font("Segoe UI", 6.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ToolStripStatusLabel_appVersion.Name = "ToolStripStatusLabel_appVersion"
-        Me.ToolStripStatusLabel_appVersion.Size = New System.Drawing.Size(228, 17)
+        Me.ToolStripStatusLabel_appVersion.Size = New System.Drawing.Size(229, 17)
         Me.ToolStripStatusLabel_appVersion.Text = "version"
         Me.ToolStripStatusLabel_appVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
