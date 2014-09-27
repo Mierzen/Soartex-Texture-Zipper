@@ -33,7 +33,7 @@
             ElseIf isFolderValid = "False" Then
                 Exit Sub
 
-            Else
+            Else 'folder is valid. Go ahead
                 If tb_folderTarget.Text = "" Then
                     Dim result As MsgBoxResult
                     result = MsgBox("Output to same folder as source?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo, "No output selected")
@@ -48,6 +48,7 @@
 
                 Me.Enabled = False
                 Cursor = Cursors.WaitCursor
+                ToolStripProgressBar_zipProgress.Visible = True
 
                 str = btn_run.Text
                 btn_run.Text = "COMPRESSING"
@@ -56,6 +57,7 @@
 
                 btn_run.Text = str
                 Cursor = Cursors.Arrow
+                ToolStripProgressBar_zipProgress.Visible = False
                 Me.Enabled = True
             End If
         End If
