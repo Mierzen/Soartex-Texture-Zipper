@@ -83,7 +83,7 @@ LineErr:
 
                     'rpFileNamePathTemp = Strings.Left(rpFileNamePathTemp, Len(rpFileNamePathTemp) - 4)
                     compress_process.StartInfo.FileName = winrarPath
-                    compress_process.StartInfo.Arguments = ("a -ep1 -r -afzip """ & rpFileNamePathTemp & """ """ & dirSource & """")
+                    compress_process.StartInfo.Arguments = ("a -ibck -ep1 -r -afzip""" & rpFileNamePathTemp & """ """ & dirSource & """")
                     compress_process.Start()
                     compress_process.WaitForExit()
                 Else
