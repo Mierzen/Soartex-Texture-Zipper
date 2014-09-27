@@ -38,7 +38,7 @@ Module compress
                     Dim str As String = "Resourcepack already exists in the target directory." & vbNewLine & vbNewLine & "Click ""Yes"" to replace the file." _
                                         & vbNewLine & "Click ""No"" to select a new target directory."
                     Dim result As MsgBoxResult
-                    result = MsgBox(str, MsgBoxStyle.Exclamation Or MsgBoxStyle.YesNoCancel, "File already exists")
+                    result = MsgBox(str, MsgBoxStyle.Exclamation Or MsgBoxStyle.YesNoCancel Or MsgBoxStyle.MsgBoxSetForeground Or MsgBoxStyle.ApplicationModal, "File already exists")
 
                     If result = MsgBoxResult.Yes Then
                         My.Computer.FileSystem.DeleteFile(rpFileNamePath)
@@ -49,7 +49,7 @@ LineErr:
                         form_main.Enabled = False
                         form_selectTarget.ShowDialog()
                         If (form_selectTarget.tb_folderTarget.Text = dirTarget) Or (form_selectTarget.tb_folderTarget.Text = Left(dirTarget, Len(dirTarget) - 1)) Then
-                            result = MsgBox("Please select a different folder, one where the file does not already exist.", MsgBoxStyle.Exclamation Or MsgBoxStyle.OkCancel, _
+                            result = MsgBox("Please select a different folder, one where the file does not already exist.", MsgBoxStyle.Exclamation Or MsgBoxStyle.OkCancel Or MsgBoxStyle.MsgBoxSetForeground Or MsgBoxStyle.ApplicationModal, _
                                    "Select a different folder")
                             If result = MsgBoxResult.Cancel Then
                                 Exit Sub
@@ -88,7 +88,7 @@ LineErr:
                     compress_process.WaitForExit()
                 Else
                     MsgBox("WinRAR isn't present." & vbNewLine & "The resource pack will still be created, however, you will have to rezip or extract the file for it to work.", _
-                           vbExclamation, "WinRAR not present")
+                           MsgBoxStyle.Exclamation Or MsgBoxStyle.MsgBoxSetForeground Or MsgBoxStyle.ApplicationModal, "WinRAR not present")
                     ZipFile.CreateFromDirectory(dirSource, rpFileNamePathTemp)
                 End If
 
@@ -107,7 +107,7 @@ LineErr:
 
             Catch ex As System.IO.IOException
                 createOrDeletePackFiles(dirSource, replaceUnderscore(rpDirName), True)
-                MsgBox("The file is currently used by another process!" & vbNewLine & vbNewLine & "Please close the other process or try again.", MsgBoxStyle.Critical, "File is used by another process")
+                MsgBox("The file is currently used by another process!" & vbNewLine & vbNewLine & "Please close the other process or try again.", MsgBoxStyle.Critical Or MsgBoxStyle.MsgBoxSetForeground, "File is used by another process")
             End Try
 
         Catch ex As System.IO.DirectoryNotFoundException
@@ -236,6 +236,6 @@ LineErr:
     End Function
 
     Private Sub invalidFolder()
-        MsgBox("Please enter a valid folder path.", MsgBoxStyle.Critical, "Invalid path")
+        MsgBox("Please enter a valid folder path.", MsgBoxStyle.Critical Or MsgBoxStyle.MsgBoxSetForeground, "Invalid path")
     End Sub
 End Module
