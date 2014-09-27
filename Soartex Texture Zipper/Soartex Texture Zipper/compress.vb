@@ -11,9 +11,12 @@ Module compress
         Try
 
             Dim rpDirName As String
+            trailingSlash("remove", dirSource)
             rpDirName = extractName(dirSource)
 
             Try
+                trailingSlash("+", dirSource)
+                trailingSlash("+", dirTarget)
 
                 'create the pack.mcmeta file (temporary)
                 createOrDeletePackFiles(dirSource, replaceUnderscore(rpDirName))
@@ -22,7 +25,7 @@ Module compress
                 Dim ver As String = getVersion(dirSource)
 
                 Dim rpFileNamePathTemp As String = My.Computer.FileSystem.SpecialDirectories.Temp & "\" & rpDirName & "-" & ver & ".zip"
-                Dim rpFileNamePath As String = dirTarget & "\" & rpDirName & "-" & ver & ".zip"
+                Dim rpFileNamePath As String = dirTarget & rpDirName & "-" & ver & ".zip"
 
                 'create the resource pack
                 'check if the zip already exists in the temp folder. If so, delete it
@@ -45,7 +48,7 @@ Module compress
 LineErr:
                         form_main.Enabled = False
                         form_selectTarget.ShowDialog()
-                        If (form_selectTarget.tb_folderTarget.Text = dirTarget) Or (form_selectTarget.tb_folderTarget.Text = dirTarget & "\") Then
+                        If (form_selectTarget.tb_folderTarget.Text = dirTarget) Or (form_selectTarget.tb_folderTarget.Text = Left(dirTarget, Len(dirTarget) - 1)) Then
                             result = MsgBox("Please select a different folder, one where the file does not already exist.", MsgBoxStyle.Exclamation Or MsgBoxStyle.OkCancel, _
                                    "Select a different folder")
                             If result = MsgBoxResult.Cancel Then
@@ -61,7 +64,7 @@ LineErr:
                         form_selectTarget.Close()
                         form_main.Enabled = True
 
-                        rpFileNamePath = dirTarget & "\" & rpDirName & "-" & ver & ".zip"
+                        rpFileNamePath = dirTarget & rpDirName & "-" & ver & ".zip"
                     End If
                 End If
 
@@ -76,18 +79,13 @@ LineErr:
                 End If
 
                 If winrarExists = True Then
-                    If Strings.Right(dirSource, 1) <> "\" Then 'append "\" if needed, so that the folder contents is zipped and not the folder itself
-                        dirSource += "\"
-                    End If
-
                     Dim compress_process As System.Diagnostics.Process = New System.Diagnostics.Process()
 
-                    rpFileNamePathTemp = Strings.Left(rpFileNamePathTemp, Len(rpFileNamePathTemp) - 4)
+                    'rpFileNamePathTemp = Strings.Left(rpFileNamePathTemp, Len(rpFileNamePathTemp) - 4)
                     compress_process.StartInfo.FileName = winrarPath
                     compress_process.StartInfo.Arguments = ("a -ep1 -r -afzip """ & rpFileNamePathTemp & """ """ & dirSource & """")
                     compress_process.Start()
                     compress_process.WaitForExit()
-                    rpFileNamePathTemp += ".zip"
                 Else
                     MsgBox("WinRAR isn't present." & vbNewLine & "The resource pack will still be created, however, you will have to rezip or extract the file for it to work.", _
                            vbExclamation, "WinRAR not present")
@@ -120,6 +118,22 @@ LineErr:
         End Try
     End Sub
 
+    Private Sub trailingSlash(mode As String, ByRef dir As String)
+        If mode = "add" Or mode = "append" Or mode = "+" Then
+
+            If Strings.Right(dir, 1) <> "\" Then 'append "\" if needed
+                dir += "\"
+            End If
+
+        ElseIf mode = "remove" Or mode = "delete" Or mode = "-" Then
+
+            If Strings.Right(dir, 1) = "\" Then 'remove "\" if needed
+                dir = Left(dir, Len(dir) - 1)
+            End If
+
+        End If
+    End Sub
+
     Private Function extractName(dir As String) As String
         Dim lastSlash As Integer = InStrRev(dir, "\")
         Dim len As Integer = Strings.Len(dir)
@@ -137,13 +151,13 @@ LineErr:
     End Function
 
     Private Sub createOrDeletePackFiles(dirTarget As String, rpName As String, Optional deleteOnly As Boolean = False) 'creates the pack.mcmeta
-        Dim pathMeta As String = dirTarget & "\pack.mcmeta"
+        Dim pathMeta As String = dirTarget & "pack.mcmeta"
 
         If My.Computer.FileSystem.FileExists(pathMeta) = True Then
             My.Computer.FileSystem.DeleteFile(pathMeta)
         End If
-        If My.Computer.FileSystem.FileExists(dirTarget & "\pack.png") = True Then
-            My.Computer.FileSystem.DeleteFile(dirTarget & "\pack.png")
+        If My.Computer.FileSystem.FileExists(dirTarget & "pack.png") = True Then
+            My.Computer.FileSystem.DeleteFile(dirTarget & "pack.png")
         End If
 
         If deleteOnly = True Then
@@ -167,7 +181,7 @@ LineErr:
         fs.Close()
 
         'Create pack.png
-        My.Resources.pack.Save(dirTarget & "\pack.png")
+        My.Resources.pack.Save(dirTarget & "pack.png")
     End Sub
 
     Private Function getVersion(dir As String)
