@@ -60,4 +60,14 @@
             End If
         End If
     End Sub
+
+    Private Sub form_main_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Dim version As String
+        version = "Version: " & My.Application.Info.Version.ToString
+
+#If DEBUG Then
+        version += "-dev"
+#End If
+        ToolStripStatusLabel_appVersion.Text = version
+    End Sub
 End Class

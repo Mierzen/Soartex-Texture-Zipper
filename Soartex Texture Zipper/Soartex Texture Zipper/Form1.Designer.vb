@@ -31,6 +31,10 @@ Partial Class form_main
         Me.btn_run = New System.Windows.Forms.Button()
         Me.btn_selectFolderTarget = New System.Windows.Forms.Button()
         Me.btn_selectFolderSource = New System.Windows.Forms.Button()
+        Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
+        Me.ToolStripProgressBar_zipProgress = New System.Windows.Forms.ToolStripProgressBar()
+        Me.ToolStripStatusLabel_appVersion = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'tb_folderSource
@@ -94,12 +98,40 @@ Partial Class form_main
         Me.btn_selectFolderSource.TabIndex = 0
         Me.btn_selectFolderSource.UseVisualStyleBackColor = True
         '
+        'StatusStrip1
+        '
+        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripProgressBar_zipProgress, Me.ToolStripStatusLabel_appVersion})
+        Me.StatusStrip1.Location = New System.Drawing.Point(0, 199)
+        Me.StatusStrip1.Name = "StatusStrip1"
+        Me.StatusStrip1.Size = New System.Drawing.Size(334, 22)
+        Me.StatusStrip1.SizingGrip = False
+        Me.StatusStrip1.TabIndex = 7
+        Me.StatusStrip1.Text = "StatusStrip1"
+        '
+        'ToolStripProgressBar_zipProgress
+        '
+        Me.ToolStripProgressBar_zipProgress.Name = "ToolStripProgressBar_zipProgress"
+        Me.ToolStripProgressBar_zipProgress.Size = New System.Drawing.Size(100, 16)
+        Me.ToolStripProgressBar_zipProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous
+        Me.ToolStripProgressBar_zipProgress.Visible = False
+        '
+        'ToolStripStatusLabel_appVersion
+        '
+        Me.ToolStripStatusLabel_appVersion.AutoSize = False
+        Me.ToolStripStatusLabel_appVersion.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+        Me.ToolStripStatusLabel_appVersion.Font = New System.Drawing.Font("Segoe UI", 6.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ToolStripStatusLabel_appVersion.Name = "ToolStripStatusLabel_appVersion"
+        Me.ToolStripStatusLabel_appVersion.Size = New System.Drawing.Size(228, 17)
+        Me.ToolStripStatusLabel_appVersion.Text = "version"
+        Me.ToolStripStatusLabel_appVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'form_main
         '
         Me.AcceptButton = Me.btn_run
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(334, 201)
+        Me.ClientSize = New System.Drawing.Size(334, 221)
+        Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.btn_run)
         Me.Controls.Add(Me.lb_descFolderTarget)
         Me.Controls.Add(Me.tb_folderTarget)
@@ -113,7 +145,9 @@ Partial Class form_main
         Me.Name = "form_main"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "Soartex resource pack creator"
+        Me.Text = "Soartex texture zipper"
+        Me.StatusStrip1.ResumeLayout(False)
+        Me.StatusStrip1.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -126,5 +160,8 @@ Partial Class form_main
     Friend WithEvents tb_folderTarget As System.Windows.Forms.TextBox
     Friend WithEvents btn_selectFolderTarget As System.Windows.Forms.Button
     Friend WithEvents btn_run As System.Windows.Forms.Button
+    Friend WithEvents StatusStrip1 As System.Windows.Forms.StatusStrip
+    Friend WithEvents ToolStripProgressBar_zipProgress As System.Windows.Forms.ToolStripProgressBar
+    Friend WithEvents ToolStripStatusLabel_appVersion As System.Windows.Forms.ToolStripStatusLabel
 
 End Class
