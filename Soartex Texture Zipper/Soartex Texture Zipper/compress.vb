@@ -18,11 +18,14 @@ Module compress
                 trailingSlash("+", dirSource)
                 trailingSlash("+", dirTarget)
 
-                'create the pack.mcmeta file (temporary)
-                createOrDeletePackFiles(dirSource, replaceUnderscore(rpDirName))
+                'delete the temporary pack.mcmeta and pack.png that might be left over from previous incomplete runs
+                createOrDeletePackFiles(dirSource, replaceUnderscore(rpDirName), True)
 
                 'get last modified version of the directory
                 Dim ver As String = getVersion(dirSource)
+
+                'create the pack.mcmeta and pack.png (temporary)
+                createOrDeletePackFiles(dirSource, replaceUnderscore(rpDirName))
 
                 Dim rpFileNamePathTemp As String = My.Computer.FileSystem.SpecialDirectories.Temp & "\" & rpDirName & "-" & ver & ".zip"
                 Dim rpFileNamePath As String = dirTarget & rpDirName & "-" & ver & ".zip"
@@ -94,7 +97,7 @@ LineErr:
 
                 My.Computer.FileSystem.MoveFile(rpFileNamePathTemp, rpFileNamePath)
 
-                'delete the temporary pack.mcmeta file
+                'delete the temporary pack.mcmeta and pack.png
                 createOrDeletePackFiles(dirSource, replaceUnderscore(rpDirName), True)
 
                 Beep()
