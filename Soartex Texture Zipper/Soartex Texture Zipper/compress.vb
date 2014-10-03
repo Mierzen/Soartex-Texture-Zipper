@@ -193,8 +193,10 @@ LineErr:
         Dim lastWritten As String
 
         For Each finfo In folder.EnumerateFiles("*.*", SearchOption.AllDirectories)
-            If newestFile Is Nothing OrElse finfo.LastWriteTime >= newestFile.LastWriteTime Then
-                newestFile = finfo
+            If finfo.Extension = ".png" Or finfo.Extension = ".ogg" Then
+                If newestFile Is Nothing OrElse finfo.LastWriteTime >= newestFile.LastWriteTime Then
+                    newestFile = finfo
+                End If
             End If
         Next
 
