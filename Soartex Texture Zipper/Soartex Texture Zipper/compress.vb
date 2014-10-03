@@ -185,8 +185,17 @@ LineErr:
     End Sub
 
     Private Function getVersion(dir As String)
+        Dim folder As New DirectoryInfo(dir)
+        Dim newestFile As FileInfo = Nothing
         Dim lastWritten As String
-        lastWritten = My.Computer.FileSystem.GetDirectoryInfo(dir).LastWriteTime
+
+        For Each finfo In folder.EnumerateFiles("*.*", SearchOption.AllDirectories)
+            If newestFile Is Nothing OrElse finfo.LastWriteTime >= newestFile.LastWriteTime Then
+                newestFile = finfo
+            End If
+        Next
+
+        lastWritten = newestFile.LastWriteTime
 
         Return Left(lastWritten, 10)
     End Function
