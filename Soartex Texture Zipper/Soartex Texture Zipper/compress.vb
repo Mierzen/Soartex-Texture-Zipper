@@ -251,6 +251,7 @@ LineErr:
                 End If
 
             End If
+
         Next
 
 
@@ -258,23 +259,16 @@ LineErr:
 
     Public Function checkSource(dir As String) As String
         Try
-            getSubDirs(dir, subDirs)
+            Dim hasSubs As Boolean = getSubDirs(dir, subDirs)
+
+            If hasSubs = False Then
+                Return False
+            End If
 
             getValidSubDirs(subDirs, subDirsValid)
             Array.Sort(Of String)(subDirsValid)
 
-            Return True
-
-
-            If CInt(subDirs.Length) <> 1 Then 'the directory contains multiple sub directories
-                Return "NoAssets"
-            Else 'check if it contains only assets
-                If checkForAssetsDir(subDirs(0)) = True Then
-                    Return True
-                Else
-                    Return "NoAssets"
-                End If
-            End If
+            Return subDirsValid.Length
 
         Catch ex As System.IO.DirectoryNotFoundException
             invalidFolder()

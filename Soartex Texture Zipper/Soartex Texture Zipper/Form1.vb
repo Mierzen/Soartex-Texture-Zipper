@@ -19,50 +19,50 @@
         Dim dirTarget As String
         Dim str As String
 
+        'check for invalid user input
         If dirSource = "" Then
             str = "Select a folder to compress to a resource pack file."
             MsgBox(str, MsgBoxStyle.Exclamation Or MsgBoxStyle.MsgBoxSetForeground, "Select folder to convert")
-        Else
-            Dim isFolderValid As String = checkSource(dirSource)
 
-            If isFolderValid = "NoAssets" Then
+            Exit Sub
+        End If
 
-                str = "Select a valid folder to compress to a resource pack file." & vbNewLine & vbNewLine & "It should contain only an ""assets"" folder."
-                MsgBox(str, MsgBoxStyle.Exclamation Or MsgBoxStyle.MsgBoxSetForeground, "Invalid folder")
+        Dim validFolders As String = checkSource(dirSource)
+        If validFolders = False Then
+            str = "Select a valid folder to compress to a resource pack file." & vbNewLine & vbNewLine & "It should contain only an ""assets"" folder or subdirectories which contain ""assets"" folders."
+            MsgBox(str, MsgBoxStyle.Exclamation Or MsgBoxStyle.MsgBoxSetForeground, "Invalid folder")
 
-            ElseIf isFolderValid = "False" Then
+            Exit Sub
+        End If
+
+        'folder is valid. Go ahead
+        If tb_folderTarget.Text = "" Then
+            Dim result As MsgBoxResult
+            result = MsgBox("Output to same folder as source?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo Or MsgBoxStyle.MsgBoxSetForeground Or MsgBoxStyle.ApplicationModal, "No output selected")
+            If result = MsgBoxResult.Yes Then
+                tb_folderTarget.Text = tb_folderSource.Text
+            Else
                 Exit Sub
-
-            Else 'folder is valid. Go ahead
-                If tb_folderTarget.Text = "" Then
-                    Dim result As MsgBoxResult
-                    result = MsgBox("Output to same folder as source?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo Or MsgBoxStyle.MsgBoxSetForeground Or MsgBoxStyle.ApplicationModal, "No output selected")
-                    If result = MsgBoxResult.Yes Then
-                        tb_folderTarget.Text = tb_folderSource.Text
-                    Else
-                        Exit Sub
-                    End If
-                End If
-
-                dirTarget = tb_folderTarget.Text
-
-                Me.Enabled = False
-                Cursor = Cursors.WaitCursor
-                ToolStripStatusLabel_appVersion.Width -= ToolStripProgressBar_zipProgress.Width
-                ToolStripProgressBar_zipProgress.Visible = True
-
-                str = btn_run.Text
-                btn_run.Text = "COMPRESSING"
-
-                makeResourcePack(dirSource, dirTarget)
-
-                btn_run.Text = str
-                Cursor = Cursors.Arrow
-                ToolStripProgressBar_zipProgress.Visible = False
-                ToolStripStatusLabel_appVersion.Width += ToolStripProgressBar_zipProgress.Width
-                Me.Enabled = True
             End If
         End If
+
+        dirTarget = tb_folderTarget.Text
+
+        Me.Enabled = False
+        Cursor = Cursors.WaitCursor
+        ToolStripStatusLabel_appVersion.Width -= ToolStripProgressBar_zipProgress.Width
+        ToolStripProgressBar_zipProgress.Visible = True
+
+        str = btn_run.Text
+        btn_run.Text = "COMPRESSING"
+
+        makeResourcePack(dirSource, dirTarget)
+
+        btn_run.Text = str
+        Cursor = Cursors.Arrow
+        ToolStripProgressBar_zipProgress.Visible = False
+        ToolStripStatusLabel_appVersion.Width += ToolStripProgressBar_zipProgress.Width
+        Me.Enabled = True
     End Sub
 
     Private Sub form_main_Load(sender As Object, e As EventArgs) Handles MyBase.Load
