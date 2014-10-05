@@ -32,6 +32,8 @@ Module compress
                 rpDirNameSpaces = replaceUnderscore(rpDirNameUnderscore)
 
                 Try
+                    folder = Left(folder, Len(folder) - 7)
+
                     trailingSlash("+", folder)
                     trailingSlash("+", dirTarget)
 
