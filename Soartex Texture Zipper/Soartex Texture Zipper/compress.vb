@@ -143,10 +143,11 @@ LineErr:
     End Sub
 
     Private Function extractName(dir As String) As String
-        Dim lastSlash As Integer = InStrRev(dir, "\")
-        Dim len As Integer = Strings.Len(dir)
+        dir = Strings.Left(dir, Len(dir) - 7)
 
-        Dim name As String = Right(dir, len - lastSlash)
+        Dim lastSlash As Integer = InStrRev(dir, "\")
+
+        Dim name As String = Right(dir, Len(dir) - lastSlash)
 
         Return name
     End Function
