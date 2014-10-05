@@ -22,6 +22,7 @@ Module compress
                 winrarExists = False
             End If
 
+            Dim progressIncrement As Integer = Math.Round((form_main.ToolStripProgressBar_zipProgress.Maximum - form_main.ToolStripProgressBar_zipProgress.Value) * 1 / subDirsValid.Length, 0)
 
             For Each folder In subDirsValid
 
@@ -105,6 +106,8 @@ LineErr:
 
                     'delete the temporary pack.mcmeta and pack.png
                     createOrDeletePackFiles(folder, rpDirNameSpaces, True)
+
+                    form_main.ToolStripProgressBar_zipProgress.Increment(progressIncrement)
 
                 Catch ex As System.IO.IOException
                     createOrDeletePackFiles(folder, rpDirNameSpaces, True)

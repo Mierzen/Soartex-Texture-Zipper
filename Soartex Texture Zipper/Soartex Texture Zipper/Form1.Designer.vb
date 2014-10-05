@@ -114,7 +114,7 @@ Partial Class form_main
         Me.ToolStripProgressBar_zipProgress.Name = "ToolStripProgressBar_zipProgress"
         Me.ToolStripProgressBar_zipProgress.Size = New System.Drawing.Size(100, 16)
         Me.ToolStripProgressBar_zipProgress.Step = 1
-        Me.ToolStripProgressBar_zipProgress.Style = System.Windows.Forms.ProgressBarStyle.Marquee
+        Me.ToolStripProgressBar_zipProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous
         Me.ToolStripProgressBar_zipProgress.Visible = False
         '
         'ToolStripStatusLabel_appVersion
