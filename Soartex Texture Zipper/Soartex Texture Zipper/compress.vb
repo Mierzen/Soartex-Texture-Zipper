@@ -13,25 +13,26 @@ Module compress
         Try
             For Each folder In subDirsValid
 
-                Dim rpDirName As String
                 trailingSlash("remove", folder)
-                rpDirName = extractName(folder)
+                Dim rpDirNameUnderscore As String, rpDirNameSpaces As String
+                rpDirNameUnderscore = extractName(folder)
+                rpDirNameSpaces = replaceUnderscore(rpDirNameUnderscore)
 
                 Try
                     trailingSlash("+", folder)
                     trailingSlash("+", dirTarget)
 
                     'delete the temporary pack.mcmeta and pack.png that might be left over from previous incomplete runs
-                    createOrDeletePackFiles(folder, replaceUnderscore(rpDirName), True)
+                    createOrDeletePackFiles(folder, rpDirNameSpaces, True)
 
                     'get last modified version of the directory
                     Dim ver As String = getVersion(folder)
 
                     'create the pack.mcmeta and pack.png (temporary)
-                    createOrDeletePackFiles(folder, replaceUnderscore(rpDirName))
+                    createOrDeletePackFiles(folder, rpDirNameSpaces)
 
-                    Dim rpFileNamePathTemp As String = My.Computer.FileSystem.SpecialDirectories.Temp & "\" & rpDirName & "-" & ver & ".zip"
-                    Dim rpFileNamePath As String = dirTarget & rpDirName & "-" & ver & ".zip"
+                    Dim rpFileNamePathTemp As String = My.Computer.FileSystem.SpecialDirectories.Temp & "\" & rpDirNameUnderscore & "-" & ver & ".zip"
+                    Dim rpFileNamePath As String = dirTarget & rpDirNameUnderscore & "-" & ver & ".zip"
 
                     'create the resource pack
                     'check if the zip already exists in the temp folder. If so, delete it
@@ -70,7 +71,7 @@ LineErr:
                             form_selectTarget.Close()
                             form_main.Enabled = True
 
-                            rpFileNamePath = dirTarget & rpDirName & "-" & ver & ".zip"
+                            rpFileNamePath = dirTarget & rpDirNameUnderscore & "-" & ver & ".zip"
                         End If
                     End If
 
@@ -101,10 +102,10 @@ LineErr:
                     My.Computer.FileSystem.MoveFile(rpFileNamePathTemp, rpFileNamePath)
 
                     'delete the temporary pack.mcmeta and pack.png
-                    createOrDeletePackFiles(folder, replaceUnderscore(rpDirName), True)
+                    createOrDeletePackFiles(folder, rpDirNameSpaces, True)
 
                 Catch ex As System.IO.IOException
-                    createOrDeletePackFiles(folder, replaceUnderscore(rpDirName), True)
+                    createOrDeletePackFiles(folder, rpDirNameSpaces, True)
                     MsgBox("The file is currently used by another process!" & vbNewLine & vbNewLine & "Please close the other process or try again.", MsgBoxStyle.Critical Or MsgBoxStyle.MsgBoxSetForeground, "File is used by another process")
                 End Try
 
