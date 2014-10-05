@@ -5,7 +5,9 @@ Imports System.Text
 
 Module compress
 
-    Dim subDirsMain As String() = Nothing 'asset folder level
+    Dim subDirs As String() = Nothing
+    Dim subDirsValid As String() = Nothing
+    Dim subDirsTemp As String() = Nothing
 
     Public Sub makeResourcePack(dirSource As String, dirTarget As String)
         Try
@@ -205,24 +207,69 @@ LineErr:
         Return Left(lastWritten, 10)
     End Function
 
-    Private Sub getSubDirs(dirToCheck As String, ByRef subDirArray() As String)
+    Private Function getSubDirs(dirToCheck As String, ByRef subDirArray() As String) As Boolean
         Dim i As Integer = 0
 
         For Each foundDirectory In My.Computer.FileSystem.GetDirectories(dirToCheck, FileIO.SearchOption.SearchTopLevelOnly)
-            ReDim subDirArray(i)
+            ReDim Preserve subDirArray(i)
             subDirArray(i) = foundDirectory
             i += 1
         Next
+
+        If i = 0 Then
+            Return False
+        Else
+            Return True
+        End If
+    End Function
+
+    Private Sub addToArray(str As String, ByRef arr() As String)
+        If IsNothing(arr) = True Then
+            ReDim Preserve arr(0)
+            arr(0) = str
+            Exit Sub
+        End If
+
+        ReDim Preserve arr(arr.Length)
+        arr(arr.Length - 1) = str
     End Sub
 
-    Public Function checkValidFolder(dir As String) As String
-        Try
-            getSubDirs(dir, subDirsMain)
+    Private Sub getValidSubDirs(ByVal subDirArrayToCheck() As String, ByRef subDirToSaveTo() As String)
+        'the dir can either already just have an "assets" folder, or it can have multiple folders, each with its own "assets" folder
+        For Each folder In subDirArrayToCheck
+            If checkForAssetsDir(folder) = True Then 'contains only assets
 
-            If CInt(subDirsMain.Length) <> 1 Then 'the directory contains multiple sub directories
+                addToArray(folder, subDirsValid)
+
+            Else 'the directory contains multiple sub directories
+
+                Dim hasSubs As Boolean = getSubDirs(folder, subDirsTemp)
+
+                If hasSubs = True Then
+                    getValidSubDirs(subDirsTemp, subDirsValid)
+                    subDirsTemp = Nothing
+                End If
+
+            End If
+        Next
+
+
+    End Sub
+
+    Public Function checkSource(dir As String) As String
+        Try
+            getSubDirs(dir, subDirs)
+
+            getValidSubDirs(subDirs, subDirsValid)
+            Array.Sort(Of String)(subDirsValid)
+
+            Return True
+
+
+            If CInt(subDirs.Length) <> 1 Then 'the directory contains multiple sub directories
                 Return "NoAssets"
             Else 'check if it contains only assets
-                If checkForAssetsDir(subDirsMain(0)) = True Then
+                If checkForAssetsDir(subDirs(0)) = True Then
                     Return True
                 Else
                     Return "NoAssets"

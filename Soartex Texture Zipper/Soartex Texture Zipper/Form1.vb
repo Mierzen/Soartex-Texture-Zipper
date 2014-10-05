@@ -23,7 +23,7 @@
             str = "Select a folder to compress to a resource pack file."
             MsgBox(str, MsgBoxStyle.Exclamation Or MsgBoxStyle.MsgBoxSetForeground, "Select folder to convert")
         Else
-            Dim isFolderValid As String = checkValidFolder(dirSource)
+            Dim isFolderValid As String = checkSource(dirSource)
 
             If isFolderValid = "NoAssets" Then
 
