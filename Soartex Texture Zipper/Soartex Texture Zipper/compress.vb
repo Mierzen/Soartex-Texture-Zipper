@@ -16,9 +16,12 @@ Module compress
             Dim winrarPath As String
             winrarPath = "C:\Program Files\WinRAR\WinRAR.exe"
 
-            If My.Computer.FileSystem.FileExists(winrarPath) = True Then : winrarExists = True
-            Else : winrarExists = False
+            If My.Computer.FileSystem.FileExists(winrarPath) = True Then
+                winrarExists = True
+            Else
+                winrarExists = False
             End If
+
 
             For Each folder In subDirsValid
 
@@ -88,7 +91,6 @@ LineErr:
                     If winrarExists = True Then
                         Dim compress_process As System.Diagnostics.Process = New System.Diagnostics.Process()
 
-                        'rpFileNamePathTemp = Strings.Left(rpFileNamePathTemp, Len(rpFileNamePathTemp) - 4)
                         compress_process.StartInfo.FileName = winrarPath
                         compress_process.StartInfo.Arguments = ("a -ibck -ep1 -r -afzip """ & rpFileNamePathTemp & """ """ & folder & """")
                         compress_process.Start()
@@ -116,7 +118,7 @@ LineErr:
             openTargetDir = MsgBox("Done!" & vbNewLine & vbNewLine & "Open Explorer to view the resource pack?", _
                                    MsgBoxStyle.YesNo Or MsgBoxStyle.DefaultButton2 Or MsgBoxStyle.MsgBoxSetForeground)
             If openTargetDir = MsgBoxResult.Yes Then
-                Diagnostics.Process.Start("Explorer.exe", subDirsValid(0)) '"/select," & 
+                Diagnostics.Process.Start("Explorer.exe", subDirsValid(0))
             End If
 
         Catch ex As System.IO.DirectoryNotFoundException
