@@ -11,6 +11,15 @@ Module compress
 
     Public Sub makeResourcePack(dirTarget As String)
         Try
+            'check if WinRAR exist
+            Dim winrarExists As Boolean
+            Dim winrarPath As String
+            winrarPath = "C:\Program Files\WinRAR\WinRAR.exe"
+
+            If My.Computer.FileSystem.FileExists(winrarPath) = True Then : winrarExists = True
+            Else : winrarExists = False
+            End If
+
             For Each folder In subDirsValid
 
                 trailingSlash("remove", folder)
@@ -76,15 +85,6 @@ LineErr:
                     End If
 
                     'Zip file WORKAROUND
-                    'check if WinRAR exist
-                    Dim winrarExists As Boolean
-                    Dim winrarPath As String
-                    winrarPath = "C:\Program Files\WinRAR\WinRAR.exe"
-
-                    If My.Computer.FileSystem.FileExists(winrarPath) = True Then : winrarExists = True
-                    Else : winrarExists = False
-                    End If
-
                     If winrarExists = True Then
                         Dim compress_process As System.Diagnostics.Process = New System.Diagnostics.Process()
 
