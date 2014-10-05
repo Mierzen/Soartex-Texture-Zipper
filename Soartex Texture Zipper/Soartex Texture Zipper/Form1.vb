@@ -56,7 +56,7 @@
         str = btn_run.Text
         btn_run.Text = "COMPRESSING"
 
-        makeResourcePack(dirSource, dirTarget)
+        makeResourcePack(dirTarget)
 
         btn_run.Text = str
         Cursor = Cursors.Arrow
